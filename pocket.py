@@ -9,11 +9,14 @@ from config import consumer_key
 redirect_url = 'http://www.google.com/' 
 
 def obtain_request_token():
-	resp = requests.post('https://getpocket.com/v3/oauth/request', data = json.dumps({'consumer_key': consumer_key, 'redirect_uri': redirect_url}), headers = {'Content-type':'application/json', 'X-Accept':'application/json'})
+	resp = requests.post('https://getpocket.com/v3/oauth/request', 
+	                     data = json.dumps({'consumer_key': consumer_key, 
+	                                        'redirect_uri': redirect_url}), 
+	                     headers = {'Content-type' : 'application/json', 
+	                                'X-Accept' : 'application/json'})
 	
 	if resp.status_code == 200:
-		jresp = resp.json()
-		return jresp['code']
+		return resp.json()['code']
 	else:
 		return None
 
@@ -22,22 +25,26 @@ def continue_authorization(code):
 	webbrowser.open(url)
 	
 def get_access_token(code):
-	resp = requests.post('https://getpocket.com/v3/oauth/authorize', data = json.dumps({'consumer_key': consumer_key, 'code': code}), headers = {'Content-type':'application/json', 'X-Accept':'application/json'})
-	if resp.status_code == 200:
-		jresp = resp.json()
-		return jresp['access_token']
+	resp = requests.post('https://getpocket.com/v3/oauth/authorize', 
+	                     data = json.dumps({'consumer_key': consumer_key, 
+	                                        'code': code}), 
+	                     headers = {'Content-type' : 'application/json', 
+	                                'X-Accept' : 'application/json'})
+	if resp.status_code == 200: 
+		return resp.json()['access_token']
 	else:
 		return None 
 
 def add_url(consumer_key, access_token, url):
-	resp = requests.post('https://getpocket.com/v3/add', data = json.dumps({'consumer_key': consumer_key, 'access_token': access_token, 'url': url}), headers = {'Content-type':'application/json', 'X-Accept':'application/json'})	
-	if resp.status_code == 200:
-		return True
-	else:
-		print resp.status_code, resp.content
-		return False
+	resp = requests.post('https://getpocket.com/v3/add', 
+	                     data = json.dumps({'consumer_key': consumer_key, 
+	                                        'access_token': access_token, 
+	                                        'url': url}), 
+	                     headers = {'Content-type' : 'application/json',
+	                                'X-Accept' : 'application/json'})	
+	return resp.status_code == 200
 
-# tests
+# usage
 
 #token = obtain_request_token()
 #continue_authorization(token)
